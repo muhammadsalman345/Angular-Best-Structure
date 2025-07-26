@@ -11,6 +11,7 @@ import { DynamicTableComponent } from 'src/app/components/dynamic-table/dynamic-
 import { AdminService } from './admin-service/admin.service';
 import { User } from './model/user.model';
 import { Observable, Subscription } from 'rxjs';
+import { AuthService } from '../../authentication/service/auth.service';
 
 @Component({
   selector: 'app-starter',
@@ -27,7 +28,7 @@ import { Observable, Subscription } from 'rxjs';
   encapsulation: ViewEncapsulation.None,
 })
 export class AdminDashboardComponent implements OnInit, OnDestroy {
-  dataSource: any[] = [];
+  dataSource: any;
   displayedColumns: string[] = ['id','users', 'email', 'status', 'menu' ]; // Updated columns
   columnHeaders: { [key: string]: string } = {
     id: 'ID',
@@ -49,13 +50,14 @@ export class AdminDashboardComponent implements OnInit, OnDestroy {
   users$!: Observable<any[]>;
   private subscription!: Subscription;
 
-  constructor(private apiService: AdminService) {}
+  constructor(private apiService: AuthService) {}
 
   ngOnInit(): void {
     debugger
-    this.users$ = this.apiService.getUsers('all');
+    // this.users$ = this.apiService.getUsers('all');
 
-    this.subscription = this.apiService.getUsers('all').subscribe((data) => {
+    this.subscription = this.apiService.get('users/all').subscribe((data) => {
+      debugger
       console.log('Users all:', data);
       this.dataSource = data;
     });

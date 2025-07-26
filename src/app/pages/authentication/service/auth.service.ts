@@ -27,9 +27,9 @@ export class AuthService {
     });
 
     // Add auth token if available
-    const token = localStorage.getItem('auth_token');
-    if (token) {
-      return headers.set('Authorization', `Bearer ${token}`);
+    const Token = localStorage.getItem('token');
+    if (Token) {
+      return headers.set('Authorization', `Bearer ${Token}`);
     }
     return headers;
   }
@@ -45,7 +45,7 @@ private handleError(error: HttpErrorResponse) {
   this._SnackbarService.error(errorMsg);
 
   if (error.status === 401) {
-    localStorage.removeItem('auth_token');
+    localStorage.removeItem('token');
     this.router.navigate(['/auth/login']);
   }
 
@@ -55,11 +55,12 @@ private handleError(error: HttpErrorResponse) {
 
   // Generic GET
   get<T>(endpoint: string, params?: any): Observable<T> {
+    debugger
     return this.http.get<ApiResponse<T>>(
       `${this.API_BASE_URL}/${endpoint}`,
       { 
         headers: this.getHeaders(),
-        params: new HttpParams({ fromObject: params })
+        params: new HttpParams({ fromObject: params }),
       }
     ).pipe(
       map(response => response.data),
