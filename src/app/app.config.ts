@@ -6,7 +6,8 @@ import {
 import {
   provideHttpClient,
   withInterceptorsFromDi,
-} from '@angular/common/http'; // ✅ Keep this, no need to import HttpClientModule directly now
+  HTTP_INTERCEPTORS, // Import HTTP_INTERCEPTORS
+} from '@angular/common/http';
 import { routes } from './app.routes';
 import {
   provideRouter,
@@ -23,12 +24,10 @@ import * as TablerIcons from 'angular-tabler-icons/icons';
 // perfect scrollbar
 import { NgScrollbarModule } from 'ngx-scrollbar';
 
-// material & forms
+// Import all material modules
 import { MaterialModule } from './material.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-// Optional interceptor setup
-// import { AuthInterceptor } from './pages/authentication/auth-interceptor/auth.interceptor';
+import { AuthInterceptor } from './pages/authentication/auth-interceptor/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -41,20 +40,14 @@ export const appConfig: ApplicationConfig = {
       }),
       withComponentInputBinding()
     ),
+    provideHttpClient(withInterceptorsFromDi()), // Interceptors ke liye DI system ka use karo
+    {
+      provide: HTTP_INTERCEPTORS, // Register the interceptor
+      useClass: AuthInterceptor,
+      multi: true, // Multiple interceptors allow karta hai
+    },
     provideClientHydration(),
     provideAnimationsAsync(),
-
-    // ✅ Register HttpClient with DI-based interceptors
-    provideHttpClient(withInterceptorsFromDi()),
-
-    // ✅ (Optional) Add interceptor to DI if you uncomment
-    // {
-    //   provide: HTTP_INTERCEPTORS,
-    //   useClass: AuthInterceptor,
-    //   multi: true,
-    // },
-
-    // ✅ Import Forms, Material, Icons, Scrollbar
     importProvidersFrom(
       FormsModule,
       ReactiveFormsModule,

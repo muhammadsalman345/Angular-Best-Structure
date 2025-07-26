@@ -1,29 +1,14 @@
-import { Component, AfterViewInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { UserStateService } from './pages/authentication/service/user-state.service';
-import { SnackbarService } from './pages/authentication/service/snackbar.service';
 
 @Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [RouterOutlet],
-  templateUrl: './app.component.html'
+    selector: 'app-root',
+    imports: [RouterOutlet],
+    templateUrl: './app.component.html'
 })
-export class AppComponent implements AfterViewInit {
-  title = 'Modernize Angular Admin Template';
+export class AppComponent {
+  title = 'Modernize Angular Admin Tempplate';
 
-  constructor(private userState: UserStateService,private snackBar: SnackbarService) {}
-
-ngAfterViewInit(): void {
-const user = this.userState.user;
-    const token = localStorage.getItem('token');
-
-    if (!token || !user) {
-      this.snackBar.error('User or token missing, logging out...')
-    
-      this.userState.logout();
-    } else {
-      this.snackBar.success('User already login')
-    }
-  }
 }
+
+
