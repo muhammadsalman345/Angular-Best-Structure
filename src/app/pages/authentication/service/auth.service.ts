@@ -1,87 +1,107 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { BehaviorSubject, catchError, throwError } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpParams, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
+import { catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
-// src/app/core/models/user.model.ts
-export interface User {
-  id: string;
-  username: string;
-  email: string;
-  role?: string;
-  token?: string;
-}
 
+export interface ApiResponse<T> {
+  status: boolean;
+  message: string;
+  data: T;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth/signin';
-  private userSubject = new BehaviorSubject<User | null>(null);
-  user$ = this.userSubject.asObservable();
+  private readonly API_BASE_URL = 'http://localhost:3000';
 
-  constructor(private http: HttpClient, private router: Router,
+  constructor(private http: HttpClient, private router: Router) {
 
+    console.log("AuthService called");
     
-  ) {
-    const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      this.userSubject.next(JSON.parse(storedUser));
-    }
   }
 
-login(credentials: { email: string; password: string }) {
-  return this.http
-    .post<{
-      status: boolean;
-      message: string;
-      data: {
-        token: string;
-        redirectPath: string;
-        user: User;
-      };
-    }>(
-      this.apiUrl,
-      credentials,
-      {
-        headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
-        withCredentials: true,
-      }
-    )
-    .pipe(
-      catchError((error) => {
-        console.error('Login failed', error);
-        return throwError(() => error);
-      })
-    )
-    .subscribe((response) => {
-      const { token, user, redirectPath } = response.data;
-      this.setSession(token, user);
-      this.router.navigate([redirectPath]); // Dynamic route from backend
+  private getHeaders(): HttpHeaders {
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
     });
-}
 
-
-
-  logout() {
-    localStorage.clear();
-    this.userSubject.next(null);
-    this.router.navigate(['/login']);
+    // Add auth token if available
+    const token = localStorage.getItem('auth_token');
+    if (token) {
+      return headers.set('Authorization', `Bearer ${token}`);
+    }
+    return headers;
   }
 
-  private setSession(token: string, user: User) {
-    localStorage.setItem('token', token);
-    localStorage.setItem('user', JSON.stringify(user));
-    this.userSubject.next(user);
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    if (error.status === 401) {
+      localStorage.removeItem('auth_token');
+      this.router.navigate(['/auth/login']);
+    }
+    
+    const errorMsg = error.error?.message || error.message || 'Something went wrong';
+    return throwError(() => new Error(errorMsg));
   }
 
-  getToken(): string | null {
-    return localStorage.getItem('token');
+  // Generic GET
+  get<T>(endpoint: string, params?: any): Observable<T> {
+    return this.http.get<ApiResponse<T>>(
+      `${this.API_BASE_URL}/${endpoint}`,
+      { 
+        headers: this.getHeaders(),
+        params: new HttpParams({ fromObject: params })
+      }
+    ).pipe(
+      map(response => response.data),
+      catchError(this.handleError)
+    );
   }
 
-  getUser(): User | null {
-    return this.userSubject.value;
+  // Generic POST
+  post<T>(endpoint: string, body: any): Observable<T> {
+    debugger
+    return this.http.post<ApiResponse<T>>(
+      `${this.API_BASE_URL}/${endpoint}`,
+      body,
+      { headers: this.getHeaders() }
+    ).pipe(
+      map(response => response.data),
+      catchError(this.handleError)
+    );
   }
 
-  isLoggedIn(): boolean {
-    return !!this.getToken();
+  // Generic PUT
+  put<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.put<ApiResponse<T>>(
+      `${this.API_BASE_URL}/${endpoint}`,
+      body,
+      { headers: this.getHeaders() }
+    ).pipe(
+      map(response => response.data),
+      catchError(this.handleError)
+    );
+  }
+
+  // Generic PATCH
+  patch<T>(endpoint: string, body: any): Observable<T> {
+    return this.http.patch<ApiResponse<T>>(
+      `${this.API_BASE_URL}/${endpoint}`,
+      body,
+      { headers: this.getHeaders() }
+    ).pipe(
+      map(response => response.data),
+      catchError(this.handleError)
+    );
+  }
+
+  // Generic DELETE
+  delete<T>(endpoint: string): Observable<T> {
+    return this.http.delete<ApiResponse<T>>(
+      `${this.API_BASE_URL}/${endpoint}`,
+      { headers: this.getHeaders() }
+    ).pipe(
+      map(response => response.data),
+      catchError(this.handleError)
+    );
   }
 }
