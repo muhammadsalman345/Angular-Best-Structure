@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AdminDashboardComponent } from './Admin-dashboard/admin-dashboard.component';
-// import { AuthGuard } from '../authentication/guard/auth.guard';
+import { AuthGuard } from '../authentication/guard/auth.guard';
 import { AppAddProductPageComponent } from './products-add-page/add-products.component';
 import { ShopAddComponent } from './shop-add-page/shop-add.component';
 
@@ -8,7 +8,7 @@ export const PagesRoutes: Routes = [
   {
     path: '',
     component: AdminDashboardComponent,   
-    // canActivate: [AuthGuard],
+    canActivate: [AuthGuard],
     data: {
       title: 'Dashboard',
     },
@@ -16,7 +16,7 @@ export const PagesRoutes: Routes = [
   {
     path: 'addproduct',
     component: AppAddProductPageComponent,
-    // canActivate: [AuthGuard], // Ensure only authenticated users can access
+    canActivate: [AuthGuard], // Ensure only authenticated users can access
     data: {
       title: 'addproduct',
     },
@@ -24,7 +24,7 @@ export const PagesRoutes: Routes = [
   {
     path: 'addshop',
     component: ShopAddComponent,
-    // canActivate: [AuthGuard], // Ensure only authenticated users can access
+    canActivate: [AuthGuard], // Ensure only authenticated users can access
     data: {
       title: 'addshop',
     },
