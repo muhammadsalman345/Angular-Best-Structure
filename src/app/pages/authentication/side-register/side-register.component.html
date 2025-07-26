@@ -30,26 +30,42 @@
 
           <div class="or-border m-t-30">or sign up with</div>
 
-          <form class="m-t-30">
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Name</mat-label>
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput />
-            </mat-form-field>
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Email Adddress</mat-label>
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="email" />
-            </mat-form-field>
-            <!-- password -->
-            <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Password</mat-label>
-            <mat-form-field appearance="outline" class="w-100" color="primary">
-              <input matInput type="password" />
-            </mat-form-field>
+       <form class="m-t-30" [formGroup]="form" (ngSubmit)="submit()">
+  <!-- First Name -->
+  <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">First Name</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput placeholder="First Name" formControlName="firstName" />
+  </mat-form-field>
 
-            <a [routerLink]="['/']" mat-flat-button color="primary" class="w-100">
-              Sign Up
-            </a>
-            <!-- input -->
-          </form>
+  <!-- Last Name -->
+  <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Last Name</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput placeholder="Last Name" formControlName="lastName" />
+  </mat-form-field>
+
+  <!-- Email -->
+  <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Email Address</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput placeholder="Email" type="email" formControlName="email" />
+  </mat-form-field>
+
+  <!-- Password -->
+  <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Password</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput placeholder="Password" type="password" formControlName="password" />
+  </mat-form-field>
+
+  <!-- Phone -->
+  <mat-label class="mat-subtitle-2 f-s-14 f-w-600 m-b-12 d-block">Phone Number</mat-label>
+  <mat-form-field appearance="outline" class="w-100" color="primary">
+    <input matInput placeholder="Phone Number" formControlName="phoneNumber" />
+  </mat-form-field>
+
+  <!-- Submit Button -->
+  <button mat-flat-button color="primary" class="w-100" type="submit">
+    Sign Up
+  </button>
+</form>
           <span class="d-block f-w-500 text-center m-t-24">Already have an Account?
 
             <a [routerLink]="['/authentication/login']" class="text-decoration-none text-primary f-w-500 f-s-14">
