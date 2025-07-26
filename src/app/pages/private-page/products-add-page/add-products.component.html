@@ -1,0 +1,174 @@
+<mat-card class="cardWithShadow theme-card">
+  <mat-card-header>
+    <mat-card-title class="m-b-0">Add Product</mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="b-t-1">
+    <form [formGroup]="productForm">
+      <div class="row">
+        <!-- Product Name -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Product Name</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="productName" />
+          </mat-form-field>
+        </div>
+
+        <!-- Category -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Category</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="category" />
+          </mat-form-field>
+        </div>
+
+        <!-- Barcode -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Barcode</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="barcode" />
+          </mat-form-field>
+        </div>
+
+        <!-- Purchase Price -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Purchase Price</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="purchasePrice" />
+          </mat-form-field>
+        </div>
+
+        <!-- Sale Price -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Sale Price</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="salePrice" />
+          </mat-form-field>
+        </div>
+
+        <!-- Quantity -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Quantity</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="quantity" />
+          </mat-form-field>
+        </div>
+
+        <!-- Unit -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Unit</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="unit">
+              <mat-option value="pcs">pcs</mat-option>
+              <mat-option value="kg">kg</mat-option>
+              <mat-option value="ltr">ltr</mat-option>
+              <mat-option value="box">box</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Product Type -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Product Type</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="productType">
+              <mat-option *ngFor="let type of productTypes" [value]="type">
+                {{ type  }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Purchase Date -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Purchase Date</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput [matDatepicker]="picker" formControlName="purchaseDate" />
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+
+        <!-- Supplier -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Supplier</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput formControlName="supplier" />
+          </mat-form-field>
+        </div>
+
+        <!-- Supplier Payment Status -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Supplier Payment Status</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-select formControlName="supplierPaymentStatus">
+              <mat-option *ngFor="let status of paymentStatuses" [value]="status">
+                {{ status  }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <!-- Amount Paid -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Amount Paid</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="amountPaidToSupplier" />
+          </mat-form-field>
+        </div>
+
+        <!-- Stock Alert Limit -->
+        <div class="col-lg-6">
+          <mat-label class="f-w-600 m-b-8 d-block">Stock Alert Limit</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input matInput type="number" formControlName="stockAlertLimit" />
+          </mat-form-field>
+        </div>
+
+<!-- 📸 Multiple Image Upload -->
+<div class="col-lg-12">
+  <mat-label class="f-w-600 m-b-8 d-block">Product Images</mat-label>
+  <input
+    type="file"
+    accept="image/*"
+    multiple
+    (change)="onImageSelected($event)"
+    class="form-control mb-3"
+  />
+
+  <!-- 🖼️ Preview -->
+  <div class="d-flex flex-wrap gap-2">
+    <div
+      *ngFor="let img of imagePreviews; let i = index"
+      class="position-relative"
+      style="width: 100px; height: 100px; border: 1px solid #ccc; border-radius: 8px; overflow: hidden;"
+    >
+      <img [src]="img" class="w-100 h-100 object-fit-cover" />
+      <button
+        type="button"
+        class="btn btn-sm btn-danger position-absolute top-0 end-0"
+        (click)="removeImage(i)"
+        style="padding: 2px 6px; font-size: 12px;"
+      >
+        ×
+      </button>
+    </div>
+  </div>
+</div>
+
+
+        <!-- Description -->
+        <div class="col-lg-12">
+          <mat-label class="f-w-600 m-b-8 d-block">Description</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <textarea matInput rows="3" formControlName="description"></textarea>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="m-t-12">
+        <button mat-flat-button color="primary" class="m-r-8" (click)="submitForm()">Submit</button>
+        <button mat-stroked-button color="warn" type="button" (click)="productForm.reset()">Cancel</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>
